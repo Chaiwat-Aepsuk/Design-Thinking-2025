@@ -37,8 +37,6 @@ A collection of academic projects and coursework.
 - **Libraries:** selenium,selenium.webdriver.chrome,webdriver_manager.chrome
 
 ## 📦 การติดตั้งและการใช้งาน (Setup & Installation)
-
-1. **Clone repository นี้:**
    - 1.ทำการติดตั้ง Python
    - 2.ติดตั้ง VScode เพื่อนำมาใช้งาน
    - 3.เปิดใช้งาน VScode ด้วยภาาษาpython "https://github.com/Chaiwat-Aepsuk/Design-Thinking-2025/blob/main/specs1.py" 
