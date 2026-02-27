@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Set Finder</title>
+    <!-- Libraries (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #f1f5f9; }
+        .card-radio:checked + div { border-color: #2563eb; background-color: #eff6ff; }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #2563eb;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 4px solid white;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-semibold text-blue-600 mb-2">แนะนำคอมเซ็ทตามงบ</h1>
+            <p class="text-slate-500">เลือกสไตล์ที่คุณชอบ และงบประมาณที่คุณต้องการ</p>
+        </div>
+
+        <!-- 1. Data Source Status -->
+        <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 mb-6 flex items-center gap-3 text-emerald-600">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <span class="text-sm font-medium">น่องพีสุดหล่อ eiei</span>
+        </div>
+
+        <!-- 2. Filters -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-8">
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4 text-slate-800 font-medium">
+                    <i data-lucide="layout" class="w-5 h-5"></i> สไตล์การใช้งาน
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="style" value="game" class="card-radio sr-only" checked>
+                        <div class="p-4 border-2 border-slate-100 rounded-xl text-center transition-all hover:border-blue-200">
+                            <i data-lucide="gamepad-2" class="w-8 h-8 mx-auto mb-2 text-blue-500"></i>
+                            <span class="block font-medium">เล่นเกม</span>
+                        </div>
+                    </label>
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="style" value="creator" class="card-radio sr-only">
+                        <div class="p-4 border-2 border-slate-100 rounded-xl text-center transition-all hover:border-blue-200">
+                            <i data-lucide="palette" class="w-8 h-8 mx-auto mb-2 text-purple-500"></i>
+                            <span class="block font-medium">ครีเอเตอร์</span>
+                        </div>
+                    </label>
+                    <label class="relative cursor-pointer">
+                        <input type="radio" name="style" value="officer" class="card-radio sr-only">
+                        <div class="p-4 border-2 border-slate-100 rounded-xl text-center transition-all hover:border-blue-200">
+                            <i data-lucide="briefcase" class="w-8 h-8 mx-auto mb-2 text-emerald-500"></i>
+                            <span class="block font-medium">ใช้งานทั่วไป</span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2 text-slate-800 font-medium">
+                        <i data-lucide="wallet" class="w-5 h-5"></i> งบประมาณ
+                    </div>
+                    <span id="budget-value" class="text-2xl font-bold text-blue-600">50,000 บาท</span>
+                </div>
+                <input type="range" id="budget-slider" min="10000" max="200000" step="1000" value="50000" class="custom-slider w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-slate-400 mt-2">
+                    <span>10,000 ฿</span>
+                    <span>200,000 ฿</span>
+                </div>
+            </div>
+        </div>
+
+        <button id="search-btn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg shadow-blue-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 mb-12">
+            <i data-lucide="search" class="w-5 h-5"></i> ค้นหาคอมเซ็ทที่เหมาะสม
+        </button>
+
+        <!-- Results -->
+        <div id="results-container">
+            <div id="results-meta" class="mb-4 text-slate-500 flex justify-between items-center"></div>
+            <div id="results-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-center py-10 text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl">
+                อัปโหลดไฟล์และกดค้นหาเพื่อดูรายการสินค้า
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Embedded CSV Data from your files
+        const csvData = {
+            game: `name,price
+Computer Set - E-QUIP 26026 (R5 5500 | RAM16GB/3200 | SSD 500GB | RTX 5050 8GB),21290
+Computer Set - E-QUIP 26027 (R5 5600 | RAM32GB/3200 | SSD 500GB | RTX 5060 8GB),29690
+Computer Set - E-QUIP 26028 (R5 5600 | RAM32GB/3200 | SSD 500GB | RTX 5060 Ti 8GB),33590
+Computer Set - E-QUIP 26029 (R5 7500F | RAM32GB/5600 | SSD 1TB | RTX 5060 8GB),42290
+Computer Set - E-QUIP 26030 (R5 7500F | RAM32GB/5600 | SSD 1TB | RX 9060XT 8GB),42990
+Computer Set - E-QUIP 26031 (R5 7500F | RAM32GB/5600 | SSD 1TB | RTX 5060 Ti 8GB),44290
+Computer Set - E-QUIP 26038 (i5-12400 | RAM32GB/3200 | SSD 500GB | RTX 5050 8GB),28990
+Computer Set - E-QUIP 26039 (i5-12400 | RAM32GB/3200 | SSD 500GB | RTX 5060 8GB),32290
+Computer Set - E-QUIP 26040 (i5-12400 | RAM32GB/3200 | SSD 500GB | RTX 5060 Ti 8GB),34990
+Computer Set - E-QUIP 26041 (i5-14400F | RAM32GB/5600 | SSD 1TB | RTX 5050 8GB),38590
+Computer Set - E-QUIP 26042 (i5-14400F | RAM32GB/5600 | SSD 1TB | RX 9060 XT 8GB),40590
+Computer Set - E-QUIP 26043 (i5-14400F | RAM32GB/5600 | SSD 1TB | RTX 5060 8GB),42290
+Computer Set - E-QUIP 26044 (i5-14400F | RAM32GB/5600 | SSD 1TB | RTX 5070 12GB),60990
+Computer Set - E-QUIP 26045 (i7-14700 | RAM32GB/5600 | SSD 1TB | RX 9070 16GB),65990
+Computer Set - E-QUIP 26046 (U5-225F | RAM32GB/5600 | SSD 1TB | RTX 5060 8GB),43590
+Computer Set - E-QUIP 26047 (U5-225F | RAM32GB/5600 | SSD 1TB | RTX 5060 Ti 8GB),48990`,
+
+            creator: `name,price
+Computer Set - E-QUIP 26032 (R5 7500F | RAM32GB/5600 | SSD 1TB | RTX 5070 12GB),60990
+Computer Set - E-QUIP 26033 (R7 7800X3D | RAM32GB/5600 | SSD 1TB | RTX 5070 12GB),75590
+Computer Set - E-QUIP 26034 (R7 9800X3D | RAM64GB/5600 | SSD 2TB | RTX 5080 16GB),195990
+Computer Set - E-QUIP 26035 (R9 9950X3D | RAM64GB/5600 | SSD 2TB | RTX 5080 16GB),204990
+Computer Set - E-QUIP 26036 (R9 9950X3D | RAM64GB/5600 | SSD 4TB | RTX 5090 32GB),214990
+Computer Set - E-QUIP 26048 (U7-265K | RAM32GB/5600 | SSD 1TB | RTX 5060 Ti 16GB),61590
+Computer Set - E-QUIP 26049 (U7-265K | RAM64GB/5600 | SSD 1TB | RTX 5090 32GB),173990
+Computer Set - E-QUIP 26050 (U9-285K | RAM64GB/5600 | SSD 2TB | RTX 5090 32GB),197990`,
+
+            officer: `name,price
+Computer Set - E-QUIP 26021 (R5 5500GT | RAM16GB/3200 | SSD 500GB),12490
+Computer Set - E-QUIP 26022 (R5 5500GT | RAM16GB/3200 | SSD 500GB | MON 21.5),14290
+Computer Set - E-QUIP 26023 (R5 5500GT | RAM16GB/3200 | SSD 500GB | MON 24),14690
+Computer Set - E-QUIP 26024 (R5 4500 | RAM16GB/3200 | SSD 500GB | RTX 3050 6GB),16990
+Computer Set - E-QUIP 26025 (R5 5500 | RAM16GB/3200 | SSD 500GB | RTX 3050 6GB),17990
+Computer Set - E-QUIP 26037 (i5-12400 | RAM16GB/3200 | SSD 500GB | RTX 3050 6GB),21190`
+        };
+
+        const slider = document.getElementById('budget-slider');
+        const budgetValueDisplay = document.getElementById('budget-value');
+        const searchBtn = document.getElementById('search-btn');
+        const resultsGrid = document.getElementById('results-grid');
+        const resultsMeta = document.getElementById('results-meta');
+
+        // Real-time slider update
+        slider.addEventListener('input', (e) => {
+            budgetValueDisplay.innerText = parseInt(e.target.value).toLocaleString() + ' บาท';
+        });
+
+        // Main Logic
+        searchBtn.addEventListener('click', () => {
+            const selectedStyle = document.querySelector('input[name="style"]:checked').value;
+            const budget = parseInt(slider.value);
+            const csvString = csvData[selectedStyle];
+
+            // Using PapaParse on embedded string
+            Papa.parse(csvString, {
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processResults(results.data, budget);
+                }
+            });
+        });
+
+        function processResults(data, budget) {
+            // Filter and Sort
+            const filtered = data
+                .filter(item => {
+                    const price = item.price || item.Price;
+                    return price && typeof price === 'number' && price <= budget;
+                })
+                .sort((a, b) => (a.price || a.Price) - (b.price || b.Price));
+
+            displayData(filtered);
+        }
+
+        function displayData(items) {
+            resultsGrid.innerHTML = '';
+            resultsGrid.classList.remove('text-center', 'py-10', 'text-slate-400', 'border-dashed', 'border-2');
+
+            if (items.length === 0) {
+                resultsMeta.innerHTML = '';
+                resultsGrid.classList.add('text-center', 'py-10', 'text-slate-400', 'border-dashed', 'border-2', 'flex', 'justify-center', 'items-center', 'w-full', 'col-span-2');
+                resultsGrid.innerHTML = '❌ ไม่พบสินค้าที่ตรงกับงบประมาณที่เลือก';
+                return;
+            }
+
+            resultsMeta.innerHTML = `<span>พบทั้งหมด <b class="text-slate-800">${items.length}</b> รายการ</span> <span class="text-xs">เรียงจากราคา น้อย → มาก</span>`;
+
+            items.forEach(item => {
+                const name = item.name || item.Name || 'ไม่ระบุชื่อ';
+                const price = item.price || item.Price;
+                
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl border border-slate-100 shadow-sm flex justify-between items-center group hover:border-blue-400 transition-all";
+                card.innerHTML = `
+                    <div class="text-left">
+                        <h3 class="font-medium text-slate-800 group-hover:text-blue-600 transition-colors text-sm sm:text-base">${name}</h3>
+                        <p class="text-xs text-slate-400">Computer Set</p>
+                    </div>
+                    <div class="text-right min-w-[100px]">
+                        <span class="text-lg font-bold text-slate-900 whitespace-nowrap">${price.toLocaleString()} ฿</span>
+                    </div>
+                `;
+                resultsGrid.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
