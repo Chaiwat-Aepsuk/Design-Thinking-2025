@@ -55,7 +55,14 @@ if st.button("ค้นหา"):
                 display_df['price'] = display_df['price'].map('{:,.0f}'.format)
                 display_df.columns = ['ชื่อสินค้า', 'ราคา (บาท)']
                 
-                st.table(display_df.reset_index(drop=True))
+                # รีเซ็ต index ก่อน
+                display_df = display_df.reset_index(drop=True)
+                
+                # ให้เริ่มที่ 1
+                display_df.index = range(1, len(display_df) + 1)
+                
+                # แสดงตาราง
+                st.dataframe(display_df)
 
             else:
                 # 10. ถ้าไม่พบสินค้า
@@ -68,6 +75,7 @@ if st.button("ค้นหา"):
 # ส่วนท้าย
 st.markdown("---")
 st.caption("จัดทำโดยระบบแนะนำคอมพิวเตอร์อัจฉริยะ")
+
 
 
 
