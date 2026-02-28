@@ -56,6 +56,9 @@ if st.button("ค้นหา"):
                 display_df.columns = ['ชื่อสินค้า', 'ราคา (บาท)']
                 
                 st.table(display_df.reset_index(drop=True))
+                display_df.index = display_df.index + 1
+
+                st.table(display_df)
             else:
                 # 10. ถ้าไม่พบสินค้า
                 st.warning("ไม่พบสินค้าที่อยู่ในงบประมาณนี้")
@@ -67,4 +70,5 @@ if st.button("ค้นหา"):
 # ส่วนท้าย
 st.markdown("---")
 st.caption("จัดทำโดยระบบแนะนำคอมพิวเตอร์อัจฉริยะ")
+
 
