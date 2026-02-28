@@ -43,4 +43,4 @@ A collection of academic projects and coursework.
 ## 📦 การติดตั้งและการใช้งาน (Setup & Installation)
    - 1.ทำการติดตั้ง Python
    - 2.ติดตั้ง VScode เพื่อนำมาใช้งาน
-   - 3.เปิดใช้งาน VScode ด้วยภาาษาpython "https://github.com/Chaiwat-Aepsuk/Design-Thinking-2025/blob/main/specs1.py" 
+   - 3.เปิดใช้งาน VScode ด้วยภาาษาpython "[คลิกเพื่อโหลด Code การ Scraping](https://github.com/Chaiwat-Aepsuk/Design-Thinking-2025/blob/main/banana.py)" 
