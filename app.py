@@ -73,9 +73,9 @@ if st.button("ค้นหา"):
         st.error(f"ไม่พบไฟล์ข้อมูล: {filename}")
 
 # ส่วนท้าย
-st.caption("Project Design Thinking 2025")
 st.markdown("---")
 st.caption("จัดทำโดยระบบแนะนำคอมพิวเตอร์อัจฉริยะ")
 
 # ที่มา
-st.caption("ที่มา : https://www.bnn.in.th/en/p/computer-hardware-diy/diy-computer-set")
+st.markdown("ที่มา : [BaNANA IT](https://www.bnn.in.th/en/p/computer-hardware-diy/diy-computer-set)")
+
