@@ -37,9 +37,9 @@ A collection of academic projects and coursework.
 ---
 
 ## 🛠️ เทคโนโลยีที่ใช้ (Tech Stack)
-- **Language:** Python
+- **Language:** Python,HTML
 - **Framework:** Streamlit
-- **Libraries:** selenium,selenium.webdriver.chrome,webdriver_manager.chrome
+- **Libraries:** selenium,selenium.webdriver.chrome,webdriver_manager.chrome,pandas,os
 
 ## 📦 การติดตั้งและการใช้งาน (Setup & Installation)
    - 1.ทำการติดตั้ง Python
